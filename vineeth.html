@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudRide - Vehicle Rental System</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f7fb;
+    color: #1f2937;
+    transition: 0.3s;
+}
+
+body.dark {
+    background: #111827;
+    color: #f9fafb;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* AUTH */
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #2563eb, #06b6d4);
+}
+
+.auth-box {
+    width: 400px;
+    max-width: 92%;
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.auth-box h1 {
+    text-align: center;
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+.auth-box p {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #6b7280;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+}
+
+.password-box {
+    display: flex;
+}
+
+.password-box input {
+    border-radius: 8px 0 0 8px;
+}
+
+.password-box button {
+    width: 50px;
+    background: #e5e7eb;
+    border-radius: 0 8px 8px 0;
+}
+
+.primary-btn {
+    width: 100%;
+    padding: 13px;
+    background: #2563eb;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.primary-btn:hover {
+    background: #1d4ed8;
+}
+
+.auth-switch {
+    margin-top: 18px;
+    text-align: center;
+}
+
+.auth-switch span {
+    color: #2563eb;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.demo-login {
+    background: #eff6ff;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+/* NAVBAR */
+
+.navbar {
+    height: 70px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.dark .navbar {
+    background: #1f2937;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-btn {
+    padding: 9px 14px;
+    border-radius: 7px;
+    background: #eef2ff;
+}
+
+.logout-btn {
+    background: #ef4444;
+    color: white;
+}
+
+/* LAYOUT */
+
+.layout {
+    display: flex;
+    min-height: calc(100vh - 70px);
+}
+
+.sidebar {
+    width: 230px;
+    background: white;
+    padding: 25px 15px;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+}
+
+.dark .sidebar {
+    background: #1f2937;
+}
+
+.sidebar button {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    text-align: left;
+    background: transparent;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.sidebar button:hover {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.content {
+    flex: 1;
+    padding: 30px;
+}
+
+/* DASHBOARD */
+
+.page-title {
+    margin-bottom: 25px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.dark .stat-card,
+.dark .card,
+.dark .vehicle-card,
+.dark .modal-content {
+    background: #1f2937;
+}
+
+.stat-card h3 {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.stat-card h2 {
+    margin-top: 10px;
+    font-size: 28px;
+    color: #2563eb;
+}
+
+/* SEARCH */
+
+.search-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.search-area input,
+.search-area select {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+}
+
+.search-area input {
+    flex: 1;
+}
+
+/* VEHICLES */
+
+.vehicle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
+}
+
+.vehicle-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+}
+
+.vehicle-image {
+    height: 170px;
+    background: linear-gradient(135deg, #2563eb, #06b6d4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 70px;
+}
+
+.vehicle-info {
+    padding: 18px;
+}
+
+.vehicle-info h3 {
+    margin-bottom: 8px;
+}
+
+.vehicle-info p {
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.vehicle-price {
+    font-size: 20px;
+    color: #2563eb;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.vehicle-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.book-btn {
+    flex: 1;
+    padding: 10px;
+    background: #2563eb;
+    color: white;
+    border-radius: 7px;
+}
+
+.favorite-btn {
+    width: 45px;
+    background: #fee2e2;
+    border-radius: 7px;
+}
+
+/* TABLE */
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 13px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+th {
+    background: #eff6ff;
+}
+
+/* MODAL */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    width: 450px;
+    max-width: 92%;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.close-btn {
+    float: right;
+    background: #ef4444;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.notification {
+    position: fixed;
+    top: 85px;
+    right: 25px;
+    background: #111827;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    display: none;
+    z-index: 200;
+}
+
+/* PROFILE */
+
+.profile {
+    max-width: 600px;
+}
+
+.profile-item {
+    margin-bottom: 15px;
+}
+
+.profile-item strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 900px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sidebar {
+        width: 180px;
+    }
+}
+
+@media(max-width: 650px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+    }
+
+    .sidebar button {
+        min-width: 130px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .navbar {
+        padding: 0 15px;
+    }
+
+    .content {
+        padding: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginPage" class="auth-container">
+
+    <div class="auth-box">
+
+        <h1>🚗 CloudRide</h1>
+
+        <p>Cloud Vehicle Rental System</p>
+
+        <form id="loginForm">
+
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+
+                <div class="password-box">
+                    <input type="password" id="loginPassword" required>
+                    <button type="button"
+                    onclick="togglePassword('loginPassword')">👁</button>
+                </div>
+            </div>
+
+            <button class="primary-btn">
+                Login
+            </button>
+
+        </form>
+
+        <div class="demo-login">
+            <b>Demo Account</b><br>
+            Email: admin@cloudride.com<br>
+            Password: admin123
+        </div>
+
+        <div class="auth-switch">
+            Don't have an account?
+            <span onclick="showSignup()">Sign Up</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SIGNUP -->
+
+<div id="signupPage" class="auth-container hidden">
+
+    <div class="auth-box">
+
+        <h1>Create Account</h1>
+
+        <p>Join CloudRide</p>
+
+        <form id="signupForm">
+
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="signupName" required>
+            </div>
+
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="signupEmail" required>
+            </div>
+
+            <div class="input-group">
+
+                <label>Password</label>
+
+                <div class="password-box">
+
+                    <input
+                    type="password"
+                    id="signupPassword"
+                    minlength="6"
+                    required>
+
+                    <button type="button"
+                    onclick="togglePassword('signupPassword')">
+                    👁
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="input-group">
+                <label>Role</label>
+
+                <select id="signupRole">
+
+                    <option value="customer">
+                        Customer
+                    </option>
+
+                    <option value="admin">
+                        Admin
+                    </option>
+
+                </select>
+
+            </div>
+
+            <button class="primary-btn">
+                Create Account
+            </button>
+
+        </form>
+
+        <div class="auth-switch">
+            Already have an account?
+            <span onclick="showLogin()">Login</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- APPLICATION -->
+
+<div id="app" class="hidden">
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🚗 CloudRide
+        </div>
+
+        <div class="nav-right">
+
+            <span id="welcomeUser"></span>
+
+            <button class="nav-btn"
+            onclick="toggleDarkMode()">
+                🌙
+            </button>
+
+            <button class="nav-btn"
+            onclick="showNotifications()">
+                🔔
+            </button>
+
+            <button class="nav-btn logout-btn"
+            onclick="logout()">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <div class="layout">
+
+        <aside class="sidebar">
+
+            <button onclick="showPage('dashboard')">
+                🏠 Dashboard
+            </button>
+
+            <button onclick="showPage('vehicles')">
+                🚗 Vehicles
+            </button>
+
+            <button onclick="showPage('bookings')">
+                📅 My Bookings
+            </button>
+
+            <button onclick="showPage('favorites')">
+                ❤️ Favorites
+            </button>
+
+            <button onclick="showPage('profile')">
+                👤 Profile
+            </button>
+
+            <button
+            id="adminMenu"
+            onclick="showPage('admin')">
+                🛡️ Admin Panel
+            </button>
+
+        </aside>
+
+
+        <main class="content">
+
+            <!-- DASHBOARD -->
+
+            <section id="dashboardPage">
+
+                <div class="page-title">
+
+                    <h1>Dashboard</h1>
+
+                    <p>
+                        Welcome to your CloudRide dashboard.
+                    </p>
+
+                </div>
+
+                <div class="stats">
+
+                    <div class="stat-card">
+
+                        <h3>Total Vehicles</h3>
+
+                        <h2 id="totalVehicles">
+                            0
+                        </h2>
+
+                    </div>
+
+                    <div class="stat-card">
+
+                        <h3>Available</h3>
+
+                        <h2 id="availableVehicles">
+                            0
+                        </h2>
+
+                    </div>
+
+                    <div class="stat-card">
+
+                        <h3>My Bookings</h3>
+
+                        <h2 id="totalBookings">
+                            0
+                        </h2>
+
+                    </div>
+
+                    <div class="stat-card">
+
+                        <h3>Favorites</h3>
+
+                        <h2 id="totalFavorites">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Latest Features</h2>
+
+                    <br>
+
+                    <p>☁️ Cloud-ready architecture</p>
+                    <p>🔐 Secure authentication system</p>
+                    <p>📊 Real-time dashboard</p>
+                    <p>🚗 Smart vehicle availability</p>
+                    <p>📅 Online vehicle booking</p>
+                    <p>💳 Digital rental management</p>
+                    <p>🔔 Notification system</p>
+                    <p>🌙 Dark mode</p>
+                    <p>📱 Mobile responsive interface</p>
+
+                </div>
+
+            </section>
+
+
+            <!-- VEHICLES -->
+
+            <section id="vehiclesPage" class="hidden">
+
+                <div class="page-title">
+
+                    <h1>Available Vehicles</h1>
+
+                </div>
+
+                <div class="search-area">
+
+                    <input
+                    type="text"
+                    id="searchVehicle"
+                    placeholder="Search vehicle..."
+                    oninput="displayVehicles()">
+
+                    <select
+                    id="vehicleType"
+                    onchange="displayVehicles()">
+
+                        <option value="all">
+                            All Types
+                        </option>
+
+                        <option value="Car">
+                            Cars
+                        </option>
+
+                        <option value="Bike">
+                            Bikes
+                        </option>
+
+                        <option value="SUV">
+                            SUVs
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div
+                id="vehicleGrid"
+                class="vehicle-grid">
+                </div>
+
+            </section>
+
+
+            <!-- BOOKINGS -->
+
+            <section id="bookingsPage" class="hidden">
+
+                <div class="page-title">
+
+                    <h1>My Bookings</h1>
+
+                </div>
+
+                <div class="card">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Pickup</th>
+                                <th>Return</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="bookingTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- FAVORITES -->
+
+            <section id="favoritesPage" class="hidden">
+
+                <div class="page-title">
+
+                    <h1>❤️ Favorite Vehicles</h1>
+
+                </div>
+
+                <div
+                id="favoriteGrid"
+                class="vehicle-grid">
+                </div>
+
+            </section>
+
+
+            <!-- PROFILE -->
+
+            <section id="profilePage" class="hidden">
+
+                <div class="page-title">
+
+                    <h1>My Profile</h1>
+
+                </div>
+
+                <div class="card profile">
+
+                    <div class="profile-item">
+
+                        <strong>Name</strong>
+
+                        <span id="profileName"></span>
+
+                    </div>
+
+                    <div class="profile-item">
+
+                        <strong>Email</strong>
+
+                        <span id="profileEmail"></span>
+
+                    </div>
+
+                    <div class="profile-item">
+
+                        <strong>Role</strong>
+
+                        <span id="profileRole"></span>
+
+                    </div>
+
+                    <div class="profile-item">
+
+                        <strong>Account Type</strong>
+
+                        <span>CloudRide User</span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ADMIN -->
+
+            <section id="adminPage" class="hidden">
+
+                <div class="page-title">
+
+                    <h1>🛡️ Admin Panel</h1>
+
+                </div>
+
+                <div class="stats">
+
+                    <div class="stat-card">
+                        <h3>Total Users</h3>
+                        <h2 id="adminUsers">0</h2>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Total Bookings</h3>
+                        <h2 id="adminBookings">0</h2>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Total Vehicles</h3>
+                        <h2 id="adminVehicles">0</h2>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Revenue</h3>
+                        <h2 id="adminRevenue">₹0</h2>
+                    </div>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Vehicle Management</h2>
+
+                    <br>
+
+                    <button
+                    class="book-btn"
+                    onclick="addVehicle()">
+                        + Add Vehicle
+                    </button>
+
+                    <br><br>
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Price/Day</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="adminVehicleTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<!-- BOOKING MODAL -->
+
+<div id="bookingModal" class="modal hidden">
+
+    <div class="modal-content">
+
+        <button
+        class="close-btn"
+        onclick="closeModal()">
+            ×
+        </button>
+
+        <h2>Book Vehicle</h2>
+
+        <form id="bookingForm">
+
+            <input
+            type="hidden"
+            id="bookingVehicleId">
+
+            <div class="input-group">
+
+                <label>Pickup Date</label>
+
+                <input
+                type="date"
+                id="pickupDate"
+                required>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>Return Date</label>
+
+                <input
+                type="date"
+                id="returnDate"
+                required>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>Pickup Location</label>
+
+                <input
+                type="text"
+                id="pickupLocation"
+                placeholder="Enter location"
+                required>
+
+            </div>
+
+            <button class="primary-btn">
+                Confirm Booking
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div id="notification"
+class="notification">
+</div>
+
+
+<script>
+
+/* =========================
+   INITIAL DATA
+========================= */
+
+let vehicles = JSON.parse(
+    localStorage.getItem("vehicles")
+) || [
+
+    {
+        id: 1,
+        name: "Tesla Model 3",
+        type: "Car",
+        price: 4500,
+        emoji: "🚘",
+        available: true
+    },
+
+    {
+        id: 2,
+        name: "BMW X5",
+        type: "SUV",
+        price: 6500,
+        emoji: "🚙",
+        available: true
+    },
+
+    {
+        id: 3,
+        name: "Royal Enfield",
+        type: "Bike",
+        price: 1200,
+        emoji: "🏍️",
+        available: true
+    },
+
+    {
+        id: 4,
+        name: "Mercedes C-Class",
+        type: "Car",
+        price: 5500,
+        emoji: "🚗",
+        available: true
+    },
+
+    {
+        id: 5,
+        name: "Toyota Fortuner",
+        type: "SUV",
+        price: 5000,
+        emoji: "🚙",
+        available: true
+    },
+
+    {
+        id: 6,
+        name: "Yamaha R15",
+        type: "Bike",
+        price: 1500,
+        emoji: "🏍️",
+        available: true
+    }
+
+];
+
+
+let users = JSON.parse(
+    localStorage.getItem("users")
+) || [
+
+    {
+        name: "Administrator",
+        email: "admin@cloudride.com",
+        password: "admin123",
+        role: "admin"
+    }
+
+];
+
+
+let bookings = JSON.parse(
+    localStorage.getItem("bookings")
+) || [];
+
+
+let favorites = JSON.parse(
+    localStorage.getItem("favorites")
+) || [];
+
+
+let currentUser =
+    JSON.parse(
+        localStorage.getItem("currentUser")
+    ) || null;
+
+
+/* =========================
+   PAGE LOAD
+========================= */
+
+window.onload = function() {
+
+    if(currentUser) {
+        openApplication();
+    }
+
+};
+
+
+/* =========================
+   AUTH
+========================= */
+
+function showSignup() {
+
+    document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+    document
+    .getElementById("signupPage")
+    .classList.remove("hidden");
+
+}
+
+
+function showLogin() {
+
+    document
+    .getElementById("signupPage")
+    .classList.add("hidden");
+
+    document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
+
+}
+
+
+function togglePassword(id) {
+
+    let input =
+        document.getElementById(id);
+
+    input.type =
+        input.type === "password"
+        ? "text"
+        : "password";
+
+}
+
+
+/* LOGIN */
+
+document
+.getElementById("loginForm")
+.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    let email =
+        document
+        .getElementById("loginEmail")
+        .value
+        .trim();
+
+    let password =
+        document
+        .getElementById("loginPassword")
+        .value;
+
+    let user =
+        users.find(
+            u =>
+            u.email === email &&
+            u.password === password
+        );
+
+    if(!user) {
+
+        showNotification(
+            "Invalid email or password!"
+        );
+
+        return;
+    }
+
+    currentUser = user;
+
+    localStorage.setItem(
+        "currentUser",
+        JSON.stringify(user)
+    );
+
+    openApplication();
+
+});
+
+
+/* SIGNUP */
+
+document
+.getElementById("signupForm")
+.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    let name =
+        document
+        .getElementById("signupName")
+        .value;
+
+    let email =
+        document
+        .getElementById("signupEmail")
+        .value;
+
+    let password =
+        document
+        .getElementById("signupPassword")
+        .value;
+
+    let role =
+        document
+        .getElementById("signupRole")
+        .value;
+
+
+    if(
+        users.some(
+            u => u.email === email
+        )
+    ) {
+
+        showNotification(
+            "Email already registered!"
+        );
+
+        return;
+    }
+
+
+    let newUser = {
+
+        name,
+        email,
+        password,
+        role
+
+    };
+
+
+    users.push(newUser);
+
+    localStorage.setItem(
+        "users",
+        JSON.stringify(users)
+    );
+
+
+    showNotification(
+        "Account created successfully!"
+    );
+
+
+    setTimeout(
+        showLogin,
+        1000
+    );
+
+});
+
+
+/* LOGOUT */
+
+function logout() {
+
+    localStorage.removeItem(
+        "currentUser"
+    );
+
+    currentUser = null;
+
+    document
+    .getElementById("app")
+    .classList.add("hidden");
+
+    document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
+
+}
+
+
+/* =========================
+   APPLICATION
+========================= */
+
+function openApplication() {
+
+    document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+    document
+    .getElementById("signupPage")
+    .classList.add("hidden");
+
+    document
+    .getElementById("app")
+    .classList.remove("hidden");
+
+
+    document
+    .getElementById("welcomeUser")
+    .textContent =
+        "Hi, " + currentUser.name;
+
+
+    document
+    .getElementById("adminMenu")
+    .style.display =
+        currentUser.role === "admin"
+        ? "block"
+        : "none";
+
+
+    updateDashboard();
+
+    displayVehicles();
+
+}
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function showPage(page) {
+
+    let pages = [
+        "dashboard",
+        "vehicles",
+        "bookings",
+        "favorites",
+        "profile",
+        "admin"
+    ];
+
+
+    pages.forEach(p => {
+
+        document
+        .getElementById(p + "Page")
+        .classList.add("hidden");
+
+    });
+
+
+    document
+    .getElementById(page + "Page")
+    .classList.remove("hidden");
+
+
+    if(page === "dashboard")
+        updateDashboard();
+
+    if(page === "vehicles")
+        displayVehicles();
+
+    if(page === "bookings")
+        displayBookings();
+
+    if(page === "favorites")
+        displayFavorites();
+
+    if(page === "profile")
+        displayProfile();
+
+    if(page === "admin")
+        displayAdmin();
+
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function updateDashboard() {
+
+    document
+    .getElementById("totalVehicles")
+    .textContent =
+        vehicles.length;
+
+
+    document
+    .getElementById("availableVehicles")
+    .textContent =
+        vehicles.filter(
+            v => v.available
+        ).length;
+
+
+    document
+    .getElementById("totalBookings")
+    .textContent =
+        bookings.filter(
+            b => b.user === currentUser.email
+        ).length;
+
+
+    document
+    .getElementById("totalFavorites")
+    .textContent =
+        favorites.filter(
+            f => f.user === currentUser.email
+        ).length;
+
+}
+
+
+/* =========================
+   VEHICLES
+========================= */
+
+function displayVehicles() {
+
+    let grid =
+        document
+        .getElementById("vehicleGrid");
+
+    if(!grid) return;
+
+    let search =
+        document
+        .getElementById("searchVehicle")
+        ?.value
+        .toLowerCase() || "";
+
+
+    let type =
+        document
+        .getElementById("vehicleType")
+        ?.value || "all";
+
+
+    let filtered =
+        vehicles.filter(v => {
+
+            let searchMatch =
+                v.name
+                .toLowerCase()
+                .includes(search);
+
+            let typeMatch =
+                type === "all" ||
+                v.type === type;
+
+            return searchMatch &&
+                   typeMatch;
+
+        });
+
+
+    grid.innerHTML = "";
+
+
+    filtered.forEach(vehicle => {
+
+        let isFavorite =
+            favorites.some(
+                f =>
+                f.user === currentUser.email &&
+                f.vehicleId === vehicle.id
+            );
+
+
+        grid.innerHTML += `
+
+        <div class="vehicle-card">
+
+            <div class="vehicle-image">
+                ${vehicle.emoji}
+            </div>
+
+            <div class="vehicle-info">
+
+                <h3>
+                    ${vehicle.name}
+                </h3>
+
+                <p>
+                    Type: ${vehicle.type}
+                </p>
+
+                <p>
+                    Status:
+                    ${vehicle.available
+                    ? "🟢 Available"
+                    : "🔴 Booked"}
+                </p>
+
+                <div class="vehicle-price">
+                    ₹${vehicle.price}/day
+                </div>
+
+                <div class="vehicle-actions">
+
+                    <button
+                    class="book-btn"
+                    ${!vehicle.available
+                    ? "disabled"
+                    : ""}
+                    onclick="openBooking(${vehicle.id})">
+
+                        Book Now
+
+                    </button>
+
+                    <button
+                    class="favorite-btn"
+                    onclick="toggleFavorite(${vehicle.id})">
+
+                        ${isFavorite
+                        ? "❤️"
+                        : "🤍"}
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+/* =========================
+   FAVORITES
+========================= */
+
+function toggleFavorite(id) {
+
+    let index =
+        favorites.findIndex(
+            f =>
+            f.user === currentUser.email &&
+            f.vehicleId === id
+        );
+
+
+    if(index >= 0) {
+
+        favorites.splice(index, 1);
+
+        showNotification(
+            "Removed from favorites"
+        );
+
+    } else {
+
+        favorites.push({
+
+            user: currentUser.email,
+            vehicleId: id
+
+        });
+
+        showNotification(
+            "Added to favorites ❤️"
+        );
+
+    }
+
+
+    localStorage.setItem(
+        "favorites",
+        JSON.stringify(favorites)
+    );
+
+
+    displayVehicles();
+
+    updateDashboard();
+
+}
+
+
+function displayFavorites() {
+
+    let grid =
+        document
+        .getElementById("favoriteGrid");
+
+    let myFavorites =
+        favorites
+        .filter(
+            f =>
+            f.user === currentUser.email
+        )
+        .map(
+            f =>
+            vehicles.find(
+                v =>
+                v.id === f.vehicleId
+            )
+        )
+        .filter(Boolean);
+
+
+    grid.innerHTML = "";
+
+
+    if(myFavorites.length === 0) {
+
+        grid.innerHTML =
+            "<p>No favorite vehicles yet.</p>";
+
+        return;
+    }
+
+
+    myFavorites.forEach(vehicle => {
+
+        grid.innerHTML += `
+
+        <div class="vehicle-card">
+
+            <div class="vehicle-image">
+                ${vehicle.emoji}
+            </div>
+
+            <div class="vehicle-info">
+
+                <h3>
+                    ${vehicle.name}
+                </h3>
+
+                <p>
+                    ${vehicle.type}
+                </p>
+
+                <div class="vehicle-price">
+                    ₹${vehicle.price}/day
+                </div>
+
+                <button
+                class="book-btn"
+                onclick="openBooking(${vehicle.id})">
+
+                    Book Now
+
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+/* =========================
+   BOOKING
+========================= */
+
+function openBooking(id) {
+
+    document
+    .getElementById("bookingVehicleId")
+    .value = id;
+
+    document
+    .getElementById("bookingModal")
+    .classList.remove("hidden");
+
+}
+
+
+function closeModal() {
+
+    document
+    .getElementById("bookingModal")
+    .classList.add("hidden");
+
+}
+
+
+document
+.getElementById("bookingForm")
+.addEventListener(
+"submit",
+function(e) {
+
+    e.preventDefault();
+
+
+    let id =
+        Number(
+            document
+            .getElementById(
+                "bookingVehicleId"
+            ).value
+        );
+
+
+    let vehicle =
+        vehicles.find(
+            v => v.id === id
+        );
+
+
+    let pickup =
+        document
+        .getElementById("pickupDate")
+        .value;
+
+
+    let returnDate =
+        document
+        .getElementById("returnDate")
+        .value;
+
+
+    let location =
+        document
+        .getElementById("pickupLocation")
+        .value;
+
+
+    if(returnDate < pickup) {
+
+        showNotification(
+            "Return date must be after pickup date."
+        );
+
+        return;
+    }
+
+
+    let booking = {
+
+        id: Date.now(),
+
+        user:
+            currentUser.email,
+
+        vehicleId:
+            vehicle.id,
+
+        vehicle:
+            vehicle.name,
+
+        pickup,
+
+        returnDate,
+
+        location,
+
+        price:
+            vehicle.price,
+
+        status:
+            "Confirmed"
+
+    };
+
+
+    bookings.push(booking);
+
+
+    vehicle.available = false;
+
+
+    localStorage.setItem(
+        "bookings",
+        JSON.stringify(bookings)
+    );
+
+
+    localStorage.setItem(
+        "vehicles",
+        JSON.stringify(vehicles)
+    );
+
+
+    closeModal();
+
+
+    showNotification(
+        "Booking confirmed successfully! 🚗"
+    );
+
+
+    updateDashboard();
+
+    displayVehicles();
+
+});
+
+
+/* =========================
+   BOOKINGS TABLE
+========================= */
+
+function displayBookings() {
+
+    let table =
+        document
+        .getElementById("bookingTable");
+
+
+    let myBookings =
+        bookings.filter(
+            b =>
+            b.user === currentUser.email
+        );
+
+
+    table.innerHTML = "";
+
+
+    if(myBookings.length === 0) {
+
+        table.innerHTML = `
+        <tr>
+            <td colspan="6">
+                No bookings found.
+            </td>
+        </tr>
+        `;
+
+        return;
+    }
+
+
+    myBookings.forEach(b => {
+
+        table.innerHTML += `
+
+        <tr>
+
+            <td>
+                ${b.vehicle}
+            </td>
+
+            <td>
+                ${b.pickup}
+            </td>
+
+            <td>
+                ${b.returnDate}
+            </td>
+
+            <td>
+                ₹${b.price}
+            </td>
+
+            <td>
+                ${b.status}
+            </td>
+
+            <td>
+
+                <button
+                onclick="cancelBooking(${b.id})">
+
+                    Cancel
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* CANCEL BOOKING */
+
+function cancelBooking(id) {
+
+    let booking =
+        bookings.find(
+            b => b.id === id
+        );
+
+
+    if(!booking) return;
+
+
+    booking.status =
+        "Cancelled";
+
+
+    let vehicle =
+        vehicles.find(
+            v =>
+            v.id === booking.vehicleId
+        );
+
+
+    if(vehicle)
+        vehicle.available = true;
+
+
+    localStorage.setItem(
+        "bookings",
+        JSON.stringify(bookings)
+    );
+
+
+    localStorage.setItem(
+        "vehicles",
+        JSON.stringify(vehicles)
+    );
+
+
+    showNotification(
+        "Booking cancelled."
+    );
+
+
+    displayBookings();
+
+    updateDashboard();
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+function displayProfile() {
+
+    document
+    .getElementById("profileName")
+    .textContent =
+        currentUser.name;
+
+
+    document
+    .getElementById("profileEmail")
+    .textContent =
+        currentUser.email;
+
+
+    document
+    .getElementById("profileRole")
+    .textContent =
+        currentUser.role;
+
+}
+
+
+/* =========================
+   ADMIN
+========================= */
+
+function displayAdmin() {
+
+    if(currentUser.role !== "admin") {
+
+        showNotification(
+            "Admin access required!"
+        );
+
+        return;
+    }
+
+
+    document
+    .getElementById("adminUsers")
+    .textContent =
+        users.length;
+
+
+    document
+    .getElementById("adminBookings")
+    .textContent =
+        bookings.length;
+
+
+    document
+    .getElementById("adminVehicles")
+    .textContent =
+        vehicles.length;
+
+
+    let revenue =
+        bookings
+        .filter(
+            b => b.status !== "Cancelled"
+        )
+        .reduce(
+            (sum,b) =>
+            sum + b.price,
+            0
+        );
+
+
+    document
+    .getElementById("adminRevenue")
+    .textContent =
+        "₹" + revenue;
+
+
+    let table =
+        document
+        .getElementById(
+            "adminVehicleTable"
+        );
+
+
+    table.innerHTML = "";
+
+
+    vehicles.forEach(v => {
+
+        table.innerHTML += `
+
+        <tr>
+
+            <td>${v.name}</td>
+
+            <td>${v.type}</td>
+
+            <td>₹${v.price}</td>
+
+            <td>
+                ${v.available
+                ? "Available"
+                : "Booked"}
+            </td>
+
+            <td>
+
+                <button
+                onclick="deleteVehicle(${v.id})">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* ADD VEHICLE */
+
+function addVehicle() {
+
+    let name =
+        prompt("Vehicle name:");
+
+    if(!name) return;
+
+
+    let type =
+        prompt(
+            "Type: Car / Bike / SUV"
+        );
+
+    if(!type) return;
+
+
+    let price =
+        Number(
+            prompt(
+                "Price per day:"
+            )
+        );
+
+
+    if(!price) return;
+
+
+    let emoji =
+        type.toLowerCase() === "bike"
+        ? "🏍️"
+        : type.toLowerCase() === "suv"
+        ? "🚙"
+        : "🚗";
+
+
+    vehicles.push({
+
+        id: Date.now(),
+
+        name,
+
+        type,
+
+        price,
+
+        emoji,
+
+        available: true
+
+    });
+
+
+    localStorage.setItem(
+        "vehicles",
+        JSON.stringify(vehicles)
+    );
+
+
+    displayAdmin();
+
+    displayVehicles();
+
+
+    showNotification(
+        "Vehicle added successfully!"
+    );
+
+}
+
+
+/* DELETE VEHICLE */
+
+function deleteVehicle(id) {
+
+    if(
+        !confirm(
+            "Delete this vehicle?"
+        )
+    ) return;
+
+
+    vehicles =
+        vehicles.filter(
+            v => v.id !== id
+        );
+
+
+    localStorage.setItem(
+        "vehicles",
+        JSON.stringify(vehicles)
+    );
+
+
+    displayAdmin();
+
+    displayVehicles();
+
+}
+
+
+/* =========================
+   DARK MODE
+========================= */
+
+function toggleDarkMode() {
+
+    document
+    .body
+    .classList
+    .toggle("dark");
+
+}
+
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+function showNotification(message) {
+
+    let notification =
+        document
+        .getElementById(
+            "notification"
+        );
+
+
+    notification.textContent =
+        message;
+
+
+    notification.style.display =
+        "block";
+
+
+    setTimeout(() => {
+
+        notification.style.display =
+            "none";
+
+    }, 2500);
+
+}
+
+
+function showNotifications() {
+
+    showNotification(
+        "🔔 You have no new notifications."
+    );
+
+}
+
+
+/* =========================
+   STORAGE
+========================= */
+
+localStorage.setItem(
+    "vehicles",
+    JSON.stringify(vehicles)
+);
+
+localStorage.setItem(
+    "users",
+    JSON.stringify(users)
+);
+
+</script>
+
+</body>
+</html>
